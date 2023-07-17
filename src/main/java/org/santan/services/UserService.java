@@ -1,19 +1,18 @@
 package org.santan.services;
 
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.santan.entities.Position;
 import org.santan.entities.User;
 import org.santan.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    LevelService levelService;
+
+    private final UserRepository userRepository;
+    private final LevelService levelService;
 
     public Optional<User> getUserById(Long telegramUserId) {
         return userRepository.findById(telegramUserId);

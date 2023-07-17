@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import org.santan.services.InfoService;
 import org.santan.services.TimerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -14,40 +13,39 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @RequiredArgsConstructor
 public class UpdateReceivedController {
 
-  @Autowired private InfoService infoService;
-  @Autowired private TimerService timerService;
+  private final InfoService infoService;
+  private final TimerService timerService;
 
   public void doUpdate(Update update, Consumer<SendMessage> send) {
 
     Message message = update.getMessage();
     String userMessage = message.getText();
+    String chatId = String.valueOf(message.getChatId());
+    Long userId = message.getFrom().getId();
     switch (userMessage) {
       case "/start":
         {
-          infoService.sendStartResponse(send, String.valueOf(message.getChatId()));
+          infoService.sendStartResponse(chatId);
           break;
         }
       case "/go":
         {
-          timerService.startTimer(
-              send, String.valueOf(message.getChatId()), message.getFrom().getId());
+          timerService.startTimer(chatId, userId);
           break;
         }
       case "/pause":
         {
-          timerService.pauseTimer(
-              send, String.valueOf(message.getChatId()), message.getFrom().getId());
+          timerService.pauseTimer(chatId, userId);
           break;
         }
       case "/reset":
         {
-          timerService.resetTimer(
-              send, String.valueOf(message.getChatId()), message.getFrom().getId());
+          timerService.resetTimer(chatId, userId);
           break;
         }
       case "/help":
         {
-          infoService.sendHelpResponse(send, String.valueOf(message.getChatId()));
+          infoService.sendHelpResponse(chatId);
           break;
         }
       default:
