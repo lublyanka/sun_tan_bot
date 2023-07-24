@@ -1,51 +1,52 @@
-package org.santan;
+package org.santan.controllers;
 
-import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import org.santan.services.InfoService;
 import org.santan.services.TimerService;
 import org.springframework.stereotype.Controller;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 @Controller
 @RequiredArgsConstructor
-public class UpdateReceivedController {
+public class MainController {
 
   private final InfoService infoService;
   private final TimerService timerService;
 
-  public void doUpdate(Update update, Consumer<SendMessage> send) {
+  public void doUpdate(Update update) {
 
     Message message = update.getMessage();
+    User  user = message.getFrom();
     String userMessage = message.getText();
     String chatId = String.valueOf(message.getChatId());
-    Long userId = message.getFrom().getId();
+    Long userId = user.getId();
+    String languageCode = user.getLanguageCode();
     switch (userMessage) {
       case "/start":
         {
-          infoService.sendStartResponse(chatId);
+          infoService.sendStartResponse(chatId, languageCode);
           break;
         }
       case "/go":
         {
-          timerService.startTimer(chatId, userId);
+          timerService.startTimer(chatId, userId, languageCode);
           break;
         }
       case "/pause":
         {
-          timerService.pauseTimer(chatId, userId);
+          timerService.pauseTimer(chatId, userId, languageCode);
           break;
         }
       case "/reset":
         {
-          timerService.resetTimer(chatId, userId);
+          timerService.resetTimer(chatId, userId, languageCode);
           break;
         }
       case "/help":
         {
-          infoService.sendHelpResponse(chatId);
+          infoService.sendHelpResponse(chatId, languageCode);
           break;
         }
       default:

@@ -1,11 +1,17 @@
 package org.santan.services;
 
+import static org.santan.entities.Messages.*;
+import static org.santan.entities.Position.FRONT;
+import static org.santan.services.LevelService.MAX_LEVEL;
+import static org.santan.services.LevelService.MIN_LEVEL;
+
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+import java.util.Timer;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.santan.TimerTask;
 import org.santan.entities.*;
 import org.springframework.stereotype.Service;
 
@@ -18,150 +24,71 @@ public class TimerService {
   private final UserService userService;
   private final MessageService messageService;
 
-  public void startTimer(String chatId, Long telegramUserId) {
+  private static String getFormatStringWithLocale(String language) {
+    String formatString;
+    switch (language == null ? "en" : language) {
+        case "es":
+          formatString = "Pone al lado %s por %3.1f minuto(s) (Nivel %d)";
+            break;
+        case "ru":
+          formatString = "Лягте на %s сторону на %3.1fм (Уровень %d)";
+          break;
+        default:
+          formatString = "Get to the %s side for %3.1f minute(s) (level %d)";
+          break;
+    }
+    return formatString;
+  }
+
+  public void onStart() {
+    List<Session> activeSessions = sessionService.getAllActiveSessions();
+    for (Session session : activeSessions) {
+      messageService.sendMessage(session.getChatId(), getSomeErrorMessageWIthLocale(session));
+      createTimerAndSaveSession(session);
+    }
+  }
+
+  public void pauseTimer(String chatId, Long telegramUserId, String language) {
+    Optional<User> userOptional = userService.getUserById(telegramUserId);
+    String returnMessageText = getSessionIsNotActiveMessageWithLocale(language);
+    if (userOptional.isPresent()) {
+      User user = userOptional.get();
+      Session session = sessionService.getSessionByUser(user);
+      if (session != null && session.isActive()) {
+        returnMessageText = getTimerPausedMessageWithLocale(language);
+        user.setCurrentLevel(session.getCurrentLevel());
+        user.setCurrentPosition(session.getCurrentPosition());
+        userService.saveUser(user);
+        deactivateAndSaveSession(session);
+      }
+    }
+    messageService.sendMessage(chatId, returnMessageText);
+  }
+
+  public void startTimer(String chatId, Long telegramUserId, String language) {
     Optional<User> userOptional = userService.getUserById(telegramUserId);
     if (userOptional.isPresent()) { // we have a User let's search for a session
       User user = userOptional.get();
       Session session = sessionService.getSessionByUser(user);
       if (session != null) { // old User old Session
-        if (session.isActive()) { // do nothing
-          noActionsNeeded(chatId);
-        } else { // resume session
-          boolean isSessionOverdue =
-              session
-                  .getFinishTimerDate()
-                  .before(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
-          if (isSessionOverdue) { // resume with currentLevel - 2
-            resumeTimerSessionMinusTwoLevels(chatId, session);
-          } else { // resume with currenLevel
-            resumeTimerSession(chatId, session);
-          }
-        }
+        startTimerForSession(session, language);
       } else { // old User new Session
-        createTimerSessionForUser(chatId, user);
+        createTimerSessionForUser(chatId, user, language);
       }
     } else { // new User new Session
-      createUserAndTimerSession(chatId, telegramUserId);
+      createUserAndTimerSession(chatId, telegramUserId, language);
     }
   }
 
-  private void resumeTimerSession(String chatId, Session session) {
-    String returnMessageText;
-    returnMessageText = getReturnMessage(session.getCurrentLevel(), session.getCurrentPosition());
-    session.setActive(true);
-    activateTimer(session);
-    messageService.sendMessage(chatId, returnMessageText);
-  }
-
-  private void resumeTimerSessionMinusTwoLevels(String chatId, Session session) {
-    Level level;
-    Position position;
-    String returnMessageText;
-    level = levelService.getLevelById(session.getCurrentLevel().getId());
-    if (level.getId() == 1 || level.getId() == 2) {
-      level = levelService.getFirstLevel();
-    } else {
-      level = levelService.getLevelById(session.getCurrentLevel().getId() - 2);
-    }
-
-    position = Position.FRONT;
-    session.setCurrentLevel(level);
-    session.setCurrentPosition(position);
-    session.setActive(true);
-    returnMessageText = getReturnMessage(level, position);
-    activateTimer(session);
-    messageService.sendMessage(chatId, returnMessageText);
-  }
-
-  private void createTimerSessionForUser(String chatId, User user) {
-    Session session;
-    Position position;
-    Level level;
-    String returnMessageText;
-    level = user.getCurrentLevel();
-    position = user.getCurrentPosition();
-
-    session = new Session(level, position, user, chatId, true);
-    activateTimer(session);
-
-    returnMessageText = getReturnMessage(level, position);
-    messageService.sendMessage(chatId, returnMessageText);
-  }
-
-  private void noActionsNeeded(String chatId) {
-    String returnMessageText;
-    returnMessageText = Messages.YOU_ARE_ALREADY_IN_A_SESSION;
-    messageService.sendMessage(chatId, returnMessageText);
-  }
-
-  private void createUserAndTimerSession(String chatId, Long telegramUserId) {
-    Level level;
-    String returnMessageText;
-    level = levelService.getFirstLevel();
-
-    User userToSave = new User(telegramUserId, level, Position.FRONT);
-    userService.saveUser(userToSave);
-
-    Session session = new Session(level, Position.FRONT, userToSave, chatId, true);
-    activateTimer(session);
-
-    returnMessageText = getReturnMessage(level, Position.FRONT);
-    messageService.sendMessage(chatId, returnMessageText);
-  }
-
-  public void runTimer(TimerTask timerTask) {
-    Optional<Session> sessionOptional =
-        sessionService.getSessionById(timerTask.getSession().getId());
-    if (sessionOptional.isPresent()) {
-      Session session = sessionOptional.get();
-      if (session.isActive()) {
-        Level level = levelService.next(session.getCurrentLevel(), session.getCurrentPosition());
-        String returnMessageText;
-
-        if (session.getCurrentLevel().getId() == 12 && level.getId() == 1) {
-          User user = session.getUser();
-          userService.resetUserLevelToFirstOne(user);
-          sessionService.deleteSession(session);
-          returnMessageText = Messages.FINISH_MESSAGE;
-        } else {
-          Position position = Position.next(session.getCurrentPosition());
-          session.setCurrentLevel(level);
-          session.setCurrentPosition(position);
-          activateTimer(session);
-          returnMessageText = getReturnMessage(level, position);
-        }
-        messageService.sendMessage(session.getChatId(), returnMessageText);
-      }
-    }
-  }
-
-  public void pauseTimer(String chatId, Long telegramUserId) {
+  public void resetTimer(String chatId, Long telegramUserId, String language) {
     Optional<User> userOptional = userService.getUserById(telegramUserId);
-    String returnMessageText = Messages.SESSION_IS_NOT_ACTIVE;
+    String returnMessageText;
+    returnMessageText = getSessionIsNotActiveMessageWithLocale(language);
+
     if (userOptional.isPresent()) {
       User user = userOptional.get();
       Session session = sessionService.getSessionByUser(user);
-      if (session != null) {
-        returnMessageText = Messages.TIMER_PAUSED;
-        session.setActive(false);
-        sessionService.saveSession(session);
-        user.setCurrentPosition(session.getCurrentPosition());
-        user.setCurrentLevel(session.getCurrentLevel());
-        userService.saveUser(user);
-      }
-    }
-    messageService.sendMessage(chatId, returnMessageText);
-  }
-
-  public void resetTimer(String chatId, Long telegramUserId) {
-    Optional<User> userOptional = userService.getUserById(telegramUserId);
-
-    String returnMessageText = Messages.SESSION_IS_NOT_ACTIVE;
-    if (userOptional.isPresent()) {
-      User user = userOptional.get();
-      Session session = sessionService.getSessionByUser(user);
-
-      returnMessageText = Messages.RESET_COMPLETED_YOU_ARE_NOW_ON_THE_FIRST_LEVEL;
+      returnMessageText = getResetCompletedMessageWithLocale(language);
       userService.resetUserLevelToFirstOne(user);
       if (session != null) {
         sessionService.deleteSession(session);
@@ -170,39 +97,100 @@ public class TimerService {
     messageService.sendMessage(chatId, returnMessageText);
   }
 
-  /* Delay before the timer starts (in milliseconds)
-   */
-  private long getDelayMS(Session session) {
-
-    Level level = session.getCurrentLevel();
-    Position position = session.getCurrentPosition();
-    return (long) (level.getPositionTime(position) * 60 * 1000);
+  public void runTimer(TimerTask timerTask) {
+    Session session = sessionService.getSessionByUser(timerTask.getSession().getUser());
+    if (session != null && session.isActive()) {
+      Level level = levelService.next(session.getCurrentLevel(), session.getCurrentPosition());
+      String chatId = session.getChatId();
+      if (session.getCurrentLevel().getId() == MAX_LEVEL && level.getId() == MIN_LEVEL) {
+        messageService.sendMessage(chatId, getFinishMessageWithLocale(session.getLang()));
+        userService.resetUserLevelToFirstOne(session.getUser());
+        sessionService.deleteSession(session);
+        timerTask.cancel();
+      } else {
+        session.setCurrentLevel(level);
+        session.setCurrentPosition(Position.next(session.getCurrentPosition()));
+        activateSessionTimer(chatId, session, session.getLang());
+      }
+    }
   }
 
-  private void activateTimer(Session session) {
-    Timestamp sessionDelay = new TimerTask(this, session).scheduleTimer(getDelayMS(session));
+  private void startTimerForSession(Session session, String language) {
+    String chatId = session.getChatId();
+    if (session.isActive()) { // do nothing
+      messageService.sendMessage(chatId, getAlreadyInSessionMessageWithLocale(language));
+    } else { // resume session
+      if ((sessionService.isSessionOverdue(session))) { // resume with currentLevel - 2
+        activateSessionTimer(chatId, levelService.getSessionWithLevelReduction(session), language);
+      } else { // resume with currenLevel
+        activateSessionTimer(chatId, session, language);
+      }
+    }
+  }
 
+  private void activateSessionTimer(String chatId, Session session, String language) {
+    String returnMessageText =
+        getReturnMessage(session.getCurrentLevel(), session.getCurrentPosition(), language);
+    session.setActive(true);
+    createTimerAndSaveSession(session);
+    messageService.sendMessage(chatId, returnMessageText);
+  }
+
+  private void createTimerSessionForUser(String chatId, User user, String language) {
+    Level level = user.getCurrentLevel();
+    Position position = user.getCurrentPosition();
+    Session session = new Session(level, position, user, chatId);
+    session.setLang(language);
+    activateSessionTimer(chatId, session, language);
+  }
+
+  private void createUserAndTimerSession(String chatId, Long telegramUserId, String language) {
+    Level level = levelService.getFirstLevel();
+    User userToSave = new User(telegramUserId, level, FRONT);
+    userService.saveUser(userToSave);
+    Session session = new Session(level, FRONT, userToSave, chatId);
+    session.setLang(language);
+    activateSessionTimer(chatId, session, language);
+  }
+
+  private void createTimerAndSaveSession(Session session) {
+    Timestamp sessionDelay =
+        new TimerTask(session).scheduleTimer(sessionService.getDelayDurationMS(session));
     session.setFinishTimerDate(sessionDelay);
     sessionService.saveSession(session);
   }
 
-  private String getReturnMessage(Level level, Position position) {
-    String returnMessageText;
-    returnMessageText =
-        String.format(
-            Messages.TURN_TO_THE_NEXT_SIDE_MESSAGE,
-            position,
-            level.getPositionTime(position),
-            level.getId());
-    return returnMessageText;
+  private void deactivateAndSaveSession(Session session) {
+    session.setActive(false);
+    sessionService.saveSession(session);
   }
 
-  public void onStart() {
-    List<Session> activeSessions = sessionService.getAllActiveSessions();
-    String returnMessageText = Messages.SOME_ERROR_HAPPENED_ACTIVE_TIMER_RELAUNCHED;
-    for (Session session : activeSessions) {
-      messageService.sendMessage(session.getChatId(), returnMessageText);
-      activateTimer(session);
+  private String getReturnMessage(Level level, Position position, String language) {
+    String formatString = getFormatStringWithLocale(language);
+    return String.format(
+            formatString,
+        position, level.getPositionTimeInMinutes(position), level.getId());
+  }
+
+  private class TimerTask extends java.util.TimerTask {
+
+    @Getter public final Session session;
+    private final Timer timer = new Timer();
+
+    public TimerTask(Session session) {
+      this.session = session;
+    }
+
+    @Override
+    public void run() {
+      runTimer(this);
+    }
+
+    public Timestamp scheduleTimer(Duration delay) {
+      Timestamp finishTimerDate = new Timestamp(System.currentTimeMillis() + delay.toMillis());
+      // Schedule the timer task
+      timer.schedule(this, delay.toMillis());
+      return finishTimerDate;
     }
   }
 }

@@ -11,10 +11,15 @@ public class MessageService extends DefaultAbsSender {
     super(options, botToken);
   }
 
-  public void sendMessage(String chatId, String returnMessageText) {
+  public SendMessage createSendMessage(String chatId, String returnMessageText) {
     SendMessage returnMessage = new SendMessage();
     returnMessage.setText(returnMessageText);
     returnMessage.setChatId(String.valueOf(chatId));
+    return returnMessage;
+  }
+
+  public void sendMessage(String chatId, String returnMessageText) {
+    SendMessage returnMessage = createSendMessage(chatId, returnMessageText);
     executeSafe(returnMessage);
   }
 

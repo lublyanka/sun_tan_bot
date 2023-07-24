@@ -6,10 +6,12 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @RequiredArgsConstructor
+
 public class TelegramInitializer {
   private final TelegramBotsApi botsApi;
   private final SanTanBot bot;
 
+  @SuppressWarnings("unused")
   public void init() {
     try {
       botsApi.registerBot(bot);

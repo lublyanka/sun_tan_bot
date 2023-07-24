@@ -17,7 +17,7 @@ public class User {
     this.currentLevel = currentLevel;
     this.currentPosition = currentPosition;
   }
-
+/*
   public User(Level currentLevel, Position currentPosition) {
     this.currentLevel = currentLevel;
     this.currentPosition = currentPosition;
@@ -26,7 +26,7 @@ public class User {
   public User(Level currentLevel, Position currentPosition, boolean firstDay) {
     this.currentLevel = currentLevel;
     this.currentPosition = currentPosition;
-  }
+  }*/
 
   public User() {
   }

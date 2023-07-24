@@ -12,8 +12,7 @@ public class OnStartBot {
   private final TimerService timerService;
 
   @EventListener
-  public void onApplicationEvent(ContextRefreshedEvent event) {
+  public void onApplicationEvent(ContextRefreshedEvent ignored) {
     timerService.onStart();
-
   }
 }

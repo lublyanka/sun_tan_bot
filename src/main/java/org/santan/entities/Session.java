@@ -16,13 +16,15 @@ public class Session {
   @Getter @Setter @OneToOne User user;
   @Getter @Setter @Column Timestamp finishTimerDate;
   @Getter @Setter @Column String chatId;
+  @Getter @Setter @Column String lang;
 
-  public Session(Level level, Position position, User userToSave, String chatId, boolean active) {
+  public Session(Level level, Position position, User userToSave, String chatId) {
     this.currentLevel = level;
     this.currentPosition = position;
     this.user = userToSave;
-    this.active = active;
     this.chatId = chatId;
+    this.active = true;
+    this.lang = "en";
   }
 
   public Session(){}

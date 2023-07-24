@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.Duration;
 import lombok.Getter;
 
 @Entity
@@ -27,21 +28,25 @@ public class Level {
     this.shadeM = shadeM;
   }
 
-  public double getPositionTime(Position position) {
+  public double getPositionTimeInMinutes(Position position) {
     switch (position) {
       case FRONT:
         return frontM;
       case BACK:
         return backM;
-      case LEFT_SIDE:
+      case LEFT:
         return leftSideM;
-      case RIGHT_SIDE:
+      case RIGHT:
         return rightSideM;
       case SHADE:
         return shadeM;
       default:
         return 0;
     }
+  }
+
+  public Duration getPositionTime(Position position) {
+   return Duration.ofSeconds((long)getPositionTimeInMinutes(position)*60);
   }
 
 
