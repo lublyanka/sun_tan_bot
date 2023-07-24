@@ -77,81 +77,67 @@ public class Messages {
                   Для того чтобы начать, пожалуйста используй команду /help, чтобы увидеть список всех доступных команд.""";
 
   public static String getSessionIsNotActiveMessageWithLocale(String language) {
-    String returnMessageText = switch (language == null ? "en" : language) {
+    return switch (language == null ? "en" : language) {
       case "es" -> SESSION_IS_NOT_ACTIVE_ES;
       case "ru" -> SESSION_IS_NOT_ACTIVE_RU;
       default -> SESSION_IS_NOT_ACTIVE_EN;
     };
-    return returnMessageText;
   }
 
   public static String getResetCompletedMessageWithLocale(String language) {
-    String returnMessageText = switch (language == null ? "en" : language) {
+    return switch (language == null ? "en" : language) {
       case "es" -> RESET_COMPLETED_YOU_ARE_NOW_ON_THE_FIRST_LEVEL_ES;
       case "ru" -> RESET_COMPLETED_YOU_ARE_NOW_ON_THE_FIRST_LEVEL_RU;
       default -> RESET_COMPLETED_YOU_ARE_NOW_ON_THE_FIRST_LEVEL_EN;
     };
-    return returnMessageText;
   }
 
   public static String getTimerPausedMessageWithLocale(String language) {
-    String returnMessageText = switch (language == null ? "en" : language) {
+    return switch (language == null ? "en" : language) {
       case "es" -> TIMER_PAUSED_ES;
       case "ru" -> TIMER_PAUSED_RU;
       default -> TIMER_PAUSED_EN;
     };
-    return returnMessageText;
   }
 
   public static String getStartMessageWithLocale(String language) {
-    String returnMessageText;
-    switch (language == null ? "en" : language) {
-      case "es":
-        returnMessageText = START_MESSAGE_ES;
-        break;
-      case "ru":
-        returnMessageText = START_MESSAGE_RU;
-        break;
-      default:
-        returnMessageText = START_MESSAGE_EN;
-        break;
-    }
+    String returnMessageText = switch (language == null ? "en" : language) {
+      case "es" -> START_MESSAGE_ES;
+      case "ru" -> START_MESSAGE_RU;
+      default -> START_MESSAGE_EN;
+    };
     return returnMessageText;
   }
 
   public static String getHelpMessageWithLocale(String language) {
-    String returnMessageText = switch (language == null ? "en" : language) {
+    return switch (language == null ? "en" : language) {
       case "es" -> HELP_MESSAGE_ES;
       case "ru" -> HELP_MESSAGE_RU;
       default -> HELP_MESSAGE_EN;
     };
-    return returnMessageText;
   }
 
   public static String getAlreadyInSessionMessageWithLocale(String language) {
-    String returnMessageText = switch (language == null ? "en" : language) {
+    return switch (language == null ? "en" : language) {
       case "es" -> YOU_ARE_ALREADY_IN_A_SESSION_ES;
       case "ru" -> YOU_ARE_ALREADY_IN_A_SESSION_RU;
       default -> YOU_ARE_ALREADY_IN_A_SESSION_EN;
     };
-    return returnMessageText;
   }
 
   public static String getSomeErrorMessageWIthLocale(Session session) {
-    String returnMessageText = switch (session.getLang() == null ? "en" : session.getLang()) {
+    return switch (session.getLang() == null ? "en" : session.getLang()) {
       case "es" -> SOME_ERROR_HAPPENED_ACTIVE_TIMER_RELAUNCHED_ES;
       case "ru" -> SOME_ERROR_HAPPENED_ACTIVE_TIMER_RELAUNCHED_RU;
       default -> SOME_ERROR_HAPPENED_ACTIVE_TIMER_RELAUNCHED_EN;
     };
-    return returnMessageText;
   }
 
   public static String getFinishMessageWithLocale(String language) {
-    String returnMessageText = switch (language == null ? "en" : language) {
+    return switch (language == null ? "en" : language) {
       case "es" -> FINISH_MESSAGE_ES;
       case "ru" -> FINISH_MESSAGE_RU;
       default -> FINISH_MESSAGE_EN;
     };
-    return returnMessageText;
   }
 }

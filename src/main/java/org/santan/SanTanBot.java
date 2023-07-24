@@ -19,6 +19,7 @@ public class SanTanBot extends TelegramLongPollingBot {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public String getBotToken() {
         return System.getenv("token");
     }

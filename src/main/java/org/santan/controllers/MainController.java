@@ -18,29 +18,18 @@ public class MainController {
   public void doUpdate(Update update) {
 
     Message message = update.getMessage();
-    User  user = message.getFrom();
+    User user = message.getFrom();
     String userMessage = message.getText();
     String chatId = String.valueOf(message.getChatId());
     Long userId = user.getId();
     String languageCode = user.getLanguageCode();
     switch (userMessage) {
-      case "/start" -> {
-        infoService.sendStartResponse(chatId, languageCode);
-      }
-      case "/go" -> {
-        timerService.startTimer(chatId, userId, languageCode);
-      }
-      case "/pause" -> {
-        timerService.pauseTimer(chatId, userId, languageCode);
-      }
-      case "/reset" -> {
-        timerService.resetTimer(chatId, userId, languageCode);
-      }
-      case "/help" -> {
-        infoService.sendHelpResponse(chatId, languageCode);
-      }
-      default -> {
-      }
+      case "/start" -> infoService.sendStartResponse(chatId, languageCode);
+      case "/go" -> timerService.startTimer(chatId, userId, languageCode);
+      case "/pause" -> timerService.pauseTimer(chatId, userId, languageCode);
+      case "/reset" -> timerService.resetTimer(chatId, userId, languageCode);
+      case "/help" -> infoService.sendHelpResponse(chatId, languageCode);
+      default -> {}
     }
   }
 }

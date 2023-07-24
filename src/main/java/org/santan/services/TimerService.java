@@ -25,12 +25,11 @@ public class TimerService {
   private final MessageService messageService;
 
   private static String getFormatStringWithLocale(String language) {
-    String formatString = switch (language == null ? "en" : language) {
+    return switch (language == null ? "en" : language) {
       case "es" -> "Pone al lado %s por %3.1f minuto(s) (Nivel %d)";
       case "ru" -> "Лягте на %s сторону на %3.1fм (Уровень %d)";
       default -> "Get to the %s side for %3.1f minute(s) (level %d)";
     };
-    return formatString;
   }
 
   public void onStart() {
