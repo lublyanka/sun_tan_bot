@@ -101,12 +101,11 @@ public class Messages {
   }
 
   public static String getStartMessageWithLocale(String language) {
-    String returnMessageText = switch (language == null ? "en" : language) {
+    return switch (language == null ? "en" : language) {
       case "es" -> START_MESSAGE_ES;
       case "ru" -> START_MESSAGE_RU;
       default -> START_MESSAGE_EN;
     };
-    return returnMessageText;
   }
 
   public static String getHelpMessageWithLocale(String language) {
