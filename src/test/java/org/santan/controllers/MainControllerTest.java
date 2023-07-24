@@ -1,5 +1,7 @@
 package org.santan.controllers;
 
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -8,8 +10,6 @@ import org.santan.services.TimerService;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
-
-import static org.mockito.Mockito.*;
 
 class MainControllerTest {
 

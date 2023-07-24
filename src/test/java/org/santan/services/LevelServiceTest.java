@@ -1,16 +1,15 @@
 package org.santan.services;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.santan.entities.Level;
 import org.santan.entities.Position;
 import org.santan.entities.Session;
 import org.santan.repositories.LevelRepository;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class LevelServiceTest {
 

@@ -32,88 +32,74 @@ public class Messages {
   public static final String YOU_ARE_ALREADY_IN_A_SESSION_ES = "Ya estás en una sesión!";
   public static final String YOU_ARE_ALREADY_IN_A_SESSION_RU = "Вы уже в сессии!";
   public static final String HELP_MESSAGE_EN =
-      "Here are the available commands:\n"
-          + "/start - Start the bot \n"
-          + "/help - Show this help message \n"
-            + "/go - Start suntan timer \n"
-          + "/pause - Pause the timer\n"
-          + "/reset - Reset the timer and start from the first level\n";
+          """
+                  Here are the available commands:
+                  /start - Start the bot\s
+                  /help - Show this help message\s
+                  /go - Start suntan timer\s
+                  /pause - Pause the timer
+                  /reset - Reset the timer and start from the first level
+                  """;
   public static final String HELP_MESSAGE_ES =
-      "Aquí están los comandos disponibles:\n"
-          + "/start - Iniciar el bot \n"
-          + "/help - Mostrar este mensaje de ayuda \n"
-          + "/go - Iniciar el avisador \n"
-          + "/pause - Pausar el avisador\n"
-          + "/reset -  Restablecer el avisador y comenzar desde el primer nivel.\n";
+          """
+                  Aquí están los comandos disponibles:
+                  /start - Iniciar el bot\s
+                  /help - Mostrar este mensaje de ayuda\s
+                  /go - Iniciar el avisador\s
+                  /pause - Pausar el avisador
+                  /reset -  Restablecer el avisador y comenzar desde el primer nivel.
+                  """;
   public static final String HELP_MESSAGE_RU =
-      "Доступные команды:\n"
-          + "/start - Запустить бот \n"
-          + "/help - Показать это сообщение с командами\n"
-          + "/go - Запустить таймер \n"
-          + "/pause - Поставить таймер на паузу\n"
-          + "/reset - Сбросить таймер и начать с начала\n";
+          """
+                  Доступные команды:
+                  /start - Запустить бот\s
+                  /help - Показать это сообщение с командами
+                  /go - Запустить таймер\s
+                  /pause - Поставить таймер на паузу
+                  /reset - Сбросить таймер и начать с начала
+                  """;
   public static final String START_MESSAGE_EN =
-      "Hello! Welcome to San Tan bot. \n"
-          + "I am here to help you to get a suntan as fast as possible. \n"
-          + "To get started, please type /help to see a list of available commands.";
+          """
+                  Hello! Welcome to San Tan bot.\s
+                  I am here to help you to get a suntan as fast as possible.\s
+                  To get started, please type /help to see a list of available commands.""";
 
   public static final String START_MESSAGE_ES =
-      "Hola! Bienvenido a San Tan bot. \n"
-          + "Estoy aquí para ayudarte a broncearte más rápido como posible. \n"
-          + "Para empezar, por favor escribe /help para ver una lista de comandos disponibles.";
+          """
+                  Hola! Bienvenido a San Tan bot.\s
+                  Estoy aquí para ayudarte a broncearte más rápido como posible.\s
+                  Para empezar, por favor escribe /help para ver una lista de comandos disponibles.""";
 
   public static final String START_MESSAGE_RU =
-      "Привет! Добро пожаловать в San Tan bot. \n"
-          + "Я здесь, чтобы помочь тебе получить загар как можно быстрее. \n"
-          + "Для того чтобы начать, пожалуйста используй команду /help, чтобы увидеть список всех доступных команд.";
+          """
+                  Привет! Добро пожаловать в San Tan bot.\s
+                  Я здесь, чтобы помочь тебе получить загар как можно быстрее.\s
+                  Для того чтобы начать, пожалуйста используй команду /help, чтобы увидеть список всех доступных команд.""";
 
   public static String getSessionIsNotActiveMessageWithLocale(String language) {
-    String returnMessageText;
-    switch (language == null ? "en" : language) {
-      case "es":
-        returnMessageText = SESSION_IS_NOT_ACTIVE_ES;
-        break;
-      case "ru":
-        returnMessageText = SESSION_IS_NOT_ACTIVE_RU;
-        break;
-      default:
-        returnMessageText = SESSION_IS_NOT_ACTIVE_EN;
-        break;
-    }
+    String returnMessageText = switch (language == null ? "en" : language) {
+      case "es" -> SESSION_IS_NOT_ACTIVE_ES;
+      case "ru" -> SESSION_IS_NOT_ACTIVE_RU;
+      default -> SESSION_IS_NOT_ACTIVE_EN;
+    };
     return returnMessageText;
   }
 
   public static String getResetCompletedMessageWithLocale(String language) {
-    String returnMessageText;
-    switch (language == null ? "en" : language) {
-      case "es":
-        returnMessageText = RESET_COMPLETED_YOU_ARE_NOW_ON_THE_FIRST_LEVEL_ES;
-        break;
-      case "ru":
-        returnMessageText = RESET_COMPLETED_YOU_ARE_NOW_ON_THE_FIRST_LEVEL_RU;
-        break;
-      default:
-        returnMessageText = RESET_COMPLETED_YOU_ARE_NOW_ON_THE_FIRST_LEVEL_EN;
-        break;
-    }
+    String returnMessageText = switch (language == null ? "en" : language) {
+      case "es" -> RESET_COMPLETED_YOU_ARE_NOW_ON_THE_FIRST_LEVEL_ES;
+      case "ru" -> RESET_COMPLETED_YOU_ARE_NOW_ON_THE_FIRST_LEVEL_RU;
+      default -> RESET_COMPLETED_YOU_ARE_NOW_ON_THE_FIRST_LEVEL_EN;
+    };
     return returnMessageText;
   }
 
   public static String getTimerPausedMessageWithLocale(String language) {
-    String returnMessageText;
-    switch (language == null ? "en" : language) {
-      case "es":
-        returnMessageText = TIMER_PAUSED_ES;
-        break;
-
-      case "ru":
-        returnMessageText = TIMER_PAUSED_RU;
-        break;
-
-      default:
-        returnMessageText = TIMER_PAUSED_EN;
-        break;
-    }
+    String returnMessageText = switch (language == null ? "en" : language) {
+      case "es" -> TIMER_PAUSED_ES;
+      case "ru" -> TIMER_PAUSED_RU;
+      default -> TIMER_PAUSED_EN;
+    };
     return returnMessageText;
   }
 
@@ -134,66 +120,38 @@ public class Messages {
   }
 
   public static String getHelpMessageWithLocale(String language) {
-    String returnMessageText;
-    switch (language == null ? "en" : language) {
-      case "es":
-        returnMessageText = HELP_MESSAGE_ES;
-        break;
-      case "ru":
-        returnMessageText = HELP_MESSAGE_RU;
-        break;
-      default:
-        returnMessageText = HELP_MESSAGE_EN;
-        break;
-    }
+    String returnMessageText = switch (language == null ? "en" : language) {
+      case "es" -> HELP_MESSAGE_ES;
+      case "ru" -> HELP_MESSAGE_RU;
+      default -> HELP_MESSAGE_EN;
+    };
     return returnMessageText;
   }
 
   public static String getAlreadyInSessionMessageWithLocale(String language) {
-    String returnMessageText;
-    switch (language == null ? "en" : language) {
-      case "es":
-        returnMessageText = YOU_ARE_ALREADY_IN_A_SESSION_ES;
-        break;
-      case "ru":
-        returnMessageText = YOU_ARE_ALREADY_IN_A_SESSION_RU;
-        break;
-      default:
-        returnMessageText = YOU_ARE_ALREADY_IN_A_SESSION_EN;
-        break;
-    }
+    String returnMessageText = switch (language == null ? "en" : language) {
+      case "es" -> YOU_ARE_ALREADY_IN_A_SESSION_ES;
+      case "ru" -> YOU_ARE_ALREADY_IN_A_SESSION_RU;
+      default -> YOU_ARE_ALREADY_IN_A_SESSION_EN;
+    };
     return returnMessageText;
   }
 
   public static String getSomeErrorMessageWIthLocale(Session session) {
-    String returnMessageText;
-    switch (session.getLang() == null ? "en" : session. getLang()) {
-        case "es":
-            returnMessageText = SOME_ERROR_HAPPENED_ACTIVE_TIMER_RELAUNCHED_ES;
-            break;
-        case "ru":
-          returnMessageText = SOME_ERROR_HAPPENED_ACTIVE_TIMER_RELAUNCHED_RU;
-            break;
-      default:
-        returnMessageText = SOME_ERROR_HAPPENED_ACTIVE_TIMER_RELAUNCHED_EN;
-        break;
-    }
+    String returnMessageText = switch (session.getLang() == null ? "en" : session.getLang()) {
+      case "es" -> SOME_ERROR_HAPPENED_ACTIVE_TIMER_RELAUNCHED_ES;
+      case "ru" -> SOME_ERROR_HAPPENED_ACTIVE_TIMER_RELAUNCHED_RU;
+      default -> SOME_ERROR_HAPPENED_ACTIVE_TIMER_RELAUNCHED_EN;
+    };
     return returnMessageText;
   }
 
   public static String getFinishMessageWithLocale(String language) {
-    String returnMessageText ;
-    switch (language == null? "en" : language) {
-      case "es":
-            returnMessageText = FINISH_MESSAGE_ES;
-            break;
-        case "ru":
-            returnMessageText = FINISH_MESSAGE_RU;
-            break;
-        default:
-            returnMessageText = FINISH_MESSAGE_EN;
-            break;
-    }
+    String returnMessageText = switch (language == null ? "en" : language) {
+      case "es" -> FINISH_MESSAGE_ES;
+      case "ru" -> FINISH_MESSAGE_RU;
+      default -> FINISH_MESSAGE_EN;
+    };
     return returnMessageText;
   }
 }

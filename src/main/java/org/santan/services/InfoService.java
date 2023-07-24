@@ -1,10 +1,10 @@
 package org.santan.services;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import static org.santan.entities.Messages.getHelpMessageWithLocale;
 import static org.santan.entities.Messages.getStartMessageWithLocale;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

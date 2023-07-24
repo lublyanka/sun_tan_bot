@@ -1,17 +1,16 @@
 package org.santan.services;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.santan.entities.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.santan.entities.Messages.YOU_ARE_ALREADY_IN_A_SESSION_EN;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.santan.entities.Messages.YOU_ARE_ALREADY_IN_A_SESSION_EN;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.santan.entities.*;
 
 class TimerServiceTest {
 

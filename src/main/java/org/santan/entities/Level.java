@@ -29,20 +29,13 @@ public class Level {
   }
 
   public double getPositionTimeInMinutes(Position position) {
-    switch (position) {
-      case FRONT:
-        return frontM;
-      case BACK:
-        return backM;
-      case LEFT:
-        return leftSideM;
-      case RIGHT:
-        return rightSideM;
-      case SHADE:
-        return shadeM;
-      default:
-        return 0;
-    }
+    return switch (position) {
+      case FRONT -> frontM;
+      case BACK -> backM;
+      case LEFT -> leftSideM;
+      case RIGHT -> rightSideM;
+      case SHADE -> shadeM;
+    };
   }
 
   public Duration getPositionTime(Position position) {

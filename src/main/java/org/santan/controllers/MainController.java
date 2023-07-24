@@ -24,33 +24,23 @@ public class MainController {
     Long userId = user.getId();
     String languageCode = user.getLanguageCode();
     switch (userMessage) {
-      case "/start":
-        {
-          infoService.sendStartResponse(chatId, languageCode);
-          break;
-        }
-      case "/go":
-        {
-          timerService.startTimer(chatId, userId, languageCode);
-          break;
-        }
-      case "/pause":
-        {
-          timerService.pauseTimer(chatId, userId, languageCode);
-          break;
-        }
-      case "/reset":
-        {
-          timerService.resetTimer(chatId, userId, languageCode);
-          break;
-        }
-      case "/help":
-        {
-          infoService.sendHelpResponse(chatId, languageCode);
-          break;
-        }
-      default:
-        break;
+      case "/start" -> {
+        infoService.sendStartResponse(chatId, languageCode);
+      }
+      case "/go" -> {
+        timerService.startTimer(chatId, userId, languageCode);
+      }
+      case "/pause" -> {
+        timerService.pauseTimer(chatId, userId, languageCode);
+      }
+      case "/reset" -> {
+        timerService.resetTimer(chatId, userId, languageCode);
+      }
+      case "/help" -> {
+        infoService.sendHelpResponse(chatId, languageCode);
+      }
+      default -> {
+      }
     }
   }
 }

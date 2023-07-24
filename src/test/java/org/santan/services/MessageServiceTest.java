@@ -1,10 +1,10 @@
 package org.santan.services;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MessageServiceTest {
   String botToken = "123asd";

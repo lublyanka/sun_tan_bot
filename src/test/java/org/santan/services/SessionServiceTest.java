@@ -4,14 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.santan.entities.Level;
-import org.santan.entities.Position;
-import org.santan.entities.Session;
-import org.santan.entities.User;
-import org.santan.repositories.SessionRepository;
-
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
@@ -20,6 +12,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.santan.entities.Level;
+import org.santan.entities.Position;
+import org.santan.entities.Session;
+import org.santan.entities.User;
+import org.santan.repositories.SessionRepository;
 
 class SessionServiceTest {
     SessionRepository sessionRepository = Mockito.mock(SessionRepository.class);
