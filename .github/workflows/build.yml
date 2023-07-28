@@ -31,6 +31,16 @@ jobs:
     #  run: mvn -B package --file pom.xml
     - name: Build, test and package with maven
       run: mvn clean install spring-boot:repackage
+    
+    - name: copy file to remote host
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: /home/runner/work/sun_tan_bot/sun_tan_bot/target/sun_tan_bot-1.0-SNAPSHOT.jar
+        remote: /opt/app/app.jar.new
+        username: ${{ secrets.REMOTE_SSH_USER }}
+        host: ${{ secrets.REMOTE_SSH_HOST }}
+        privateKey : ${{ secrets.REMOTE_SSH_KEY }}
+        passphrase : ${{ secrets.REMOTE_SSH_KEY_PASSPHRASE }}
 
     # disabled because snapshots are not enabled/supported
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
