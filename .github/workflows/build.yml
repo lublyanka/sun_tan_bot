@@ -27,9 +27,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-    - name: package
+    #- name: Build with Maven
+    #  run: mvn -B package --file pom.xml
+    - name: Build, test and package with maven
       run: mvn clean install spring-boot:repackage
 
     # disabled because snapshots are not enabled/supported
