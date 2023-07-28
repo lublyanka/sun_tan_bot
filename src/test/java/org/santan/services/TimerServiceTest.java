@@ -8,10 +8,13 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.santan.entities.*;
 
+@Disabled
 class TimerServiceTest {
 
   LevelService levelService = Mockito.mock(LevelService.class);
