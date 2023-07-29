@@ -200,6 +200,7 @@ class TimerServiceTest {
     user.setCurrentPosition(Position.LEFT);
     when(userService.getUserById(telegramUserId)).thenReturn(Optional.of(user));
     when(sessionService.getSessionByUser(user)).thenReturn(null);
+    when(sessionService.getDelayDurationMS(any(Session.class))).thenReturn(Duration.ofSeconds(60L));
     String message = "Get to the LEFT side for 1.0 minute(s) (level 1)";
     doNothing().when(messageService).sendMessage(eq(chatId), eq(message));
     doNothing().when(sessionService).saveSession(any(Session.class));
@@ -207,7 +208,7 @@ class TimerServiceTest {
     timerService.startTimer(chatId, telegramUserId, null);
 
     verify(userService).getUserById(eq(telegramUserId));
-    verify(sessionService, times(2)).getSessionByUser(user);
+    verify(sessionService, times(1)).getSessionByUser(user);
     verify(messageService).sendMessage(eq(chatId), eq(message));
     verify(sessionService).saveSession(any(Session.class));
   }
