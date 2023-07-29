@@ -1,5 +1,6 @@
 package org.santan.services;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.santan.entities.Messages.YOU_ARE_ALREADY_IN_A_SESSION_EN;
@@ -9,12 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.santan.entities.*;
 
-@Disabled
 class TimerServiceTest {
 
   LevelService levelService = Mockito.mock(LevelService.class);
@@ -125,7 +124,7 @@ class TimerServiceTest {
   }
 
   @Test
-  void pauseTimer_SessionIsNotNull() {
+  void pauseTimer_SessionIsNotNullAndNotActive() {
     Long telegramUserId = 1L;
     String chatId = "123";
     User user = new User();
@@ -139,10 +138,34 @@ class TimerServiceTest {
     timerService.pauseTimer(chatId, telegramUserId, null);
     verify(userService, atMostOnce()).getUserById(eq(telegramUserId));
     verify(sessionService).getSessionByUser(eq(user));
-    // todo uncomment this and fix code
-    // verify(userService).saveUser(eq(user));
-    // verify(sessionService).saveSession(eq(session));
-    // verify(messageService).sendMessage(eq(chatId), eq(Messages.TIMER_PAUSED_EN));
+    verify(messageService).sendMessage(eq(chatId), eq(Messages.SESSION_IS_NOT_ACTIVE_EN));
+  }
+
+  @Test
+  void pauseTimer_SessionIsNotNullAndActive() {
+    Long telegramUserId = 1L;
+    String chatId = "123";
+    User user = new User();
+    when(userService.getUserById(telegramUserId)).thenReturn(Optional.of(user));
+
+
+    Session session = new Session();
+    session.setActive(true);
+    session.setCurrentPosition(Position.LEFT);
+    session.setCurrentLevel(new Level());
+    when(sessionService.getSessionByUser(user)).thenReturn(session);
+    doNothing().when(userService).saveUser(user);
+    doNothing().when(sessionService).saveSession(session);
+
+    timerService.pauseTimer(chatId, telegramUserId, null);
+    assertFalse(session.isActive());
+    assertEquals(session.getCurrentPosition(), user.getCurrentPosition());
+    assertEquals(session.getCurrentLevel(), user.getCurrentLevel());
+    verify(userService, atMostOnce()).getUserById(eq(telegramUserId));
+    verify(sessionService).getSessionByUser(eq(user));
+    verify(userService).saveUser(eq(user));
+    verify(sessionService).saveSession(eq(session));
+    verify(messageService).sendMessage(eq(chatId), eq(Messages.TIMER_PAUSED_EN));
   }
 
   @Test
