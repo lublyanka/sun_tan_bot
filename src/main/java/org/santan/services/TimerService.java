@@ -12,11 +12,13 @@ import java.util.Optional;
 import java.util.Timer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.santan.entities.*;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Log
 public class TimerService {
 
   private final LevelService levelService;
@@ -33,6 +35,7 @@ public class TimerService {
   }
 
   public void onStart() {
+    log.info("TimerService onStart. Restart all active sessions");
     List<Session> activeSessions = sessionService.getAllActiveSessions();
     for (Session session : activeSessions) {
       messageService.sendMessage(session.getChatId(), getSomeErrorMessageWIthLocale(session));
@@ -41,6 +44,8 @@ public class TimerService {
   }
 
   public void pauseTimer(String chatId, Long telegramUserId, String language) {
+    log.info("Pausing timer for chatId: " + chatId);
+    log.info("Language: " + language);
     Optional<User> userOptional = userService.getUserById(telegramUserId);
     String returnMessageText = getSessionIsNotActiveMessageWithLocale(language);
     if (userOptional.isPresent()) {
@@ -58,6 +63,8 @@ public class TimerService {
   }
 
   public void startTimer(String chatId, Long telegramUserId, String language) {
+    log.info("Starting timer for chatId: " + chatId);
+    log.info("Language: " + language);
     Optional<User> userOptional = userService.getUserById(telegramUserId);
     if (userOptional.isPresent()) { // we have a User let's search for a session
       User user = userOptional.get();
@@ -73,6 +80,8 @@ public class TimerService {
   }
 
   public void resetTimer(String chatId, Long telegramUserId, String language) {
+    log.info("Resetting timer for chatId: " + chatId);
+    log.info("Language: " + language);
     Optional<User> userOptional = userService.getUserById(telegramUserId);
     String returnMessageText;
     returnMessageText = getSessionIsNotActiveMessageWithLocale(language);
@@ -160,8 +169,7 @@ public class TimerService {
   private String getReturnMessage(Level level, Position position, String language) {
     String formatString = getFormatStringWithLocale(language);
     return String.format(
-            formatString,
-        position, level.getPositionTimeInMinutes(position), level.getId());
+        formatString, position, level.getPositionTimeInMinutes(position), level.getId());
   }
 
   private class TimerTask extends java.util.TimerTask {
